@@ -25,7 +25,7 @@ st.write(df.describe())
 # Visualisasi Tren Peminjaman Sepeda Harian
 st.subheader("📅 Tren Peminjaman Sepeda Harian")
 fig, ax = plt.subplots(figsize=(10, 5))
-ax.plot(df['dteday'], df['cnt'], marker='o', linestyle='-')
+ax.plot(filtered_df['dteday'], filtered_df['cnt'], marker='o', linestyle='-')
 ax.set_xlabel("Tanggal")
 ax.set_ylabel("Jumlah Peminjaman Sepeda")
 ax.set_title("Tren Peminjaman Sepeda dari Waktu ke Waktu")
@@ -33,7 +33,7 @@ st.pyplot(fig)
 
 # Visualisasi Jumlah Peminjaman Sepeda Berdasarkan Cuaca
 st.subheader("🌦️ Peminjaman Sepeda Berdasarkan Cuaca")
-weather_counts = df.groupby("weathersit")["cnt"].sum()
+weather_counts = filtered_df.groupby("weathersit")["cnt"].sum()
 weather_labels = {1: "Cerah", 2: "Berawan", 3: "Hujan", 4: "Salju"}
 weather_counts = weather_counts.rename(index=weather_labels)
 
