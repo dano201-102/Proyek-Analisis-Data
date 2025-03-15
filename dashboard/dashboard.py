@@ -60,6 +60,15 @@ season_options = ['All Seasons'] + list(df['season'].unique())
 selected_season = st.selectbox('Pilih Musim:', season_options)
 
 if selected_season != 'All Seasons':
-    df = df[df['season'] == selected_season]
+    season_df = df[df['season'] == selected_season]
+else:
+    season_df = df
 
 st.write("Menampilkan data untuk musim:", selected_season)
+
+# Visualisasi dampak musim terhadap peminjaman sepeda
+fig, ax = plt.subplots(figsize=(8, 5))
+sns.barplot(x=season_df['season'], y=season_df['cnt'], ci=None, ax=ax)
+ax.set_xlabel("Musim")
+ax.set_ylabel("Rata-rata Peminjaman Sepeda")
+st.pyplot(fig)
