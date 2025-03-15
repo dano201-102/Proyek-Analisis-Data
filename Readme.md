@@ -40,7 +40,7 @@ Gunakan Jupyter Notebook atau Google Colab untuk membuka dan menjalankan `Proyek
 
 ### 4️⃣ Jalankan Dashboard Secara Lokal
 ```bash
-streamlit run dashboard/app.py
+streamlit run dashboard/dashboard.py
 ```
 Dashboard akan berjalan di browser pada alamat `http://localhost:8501`.
 
