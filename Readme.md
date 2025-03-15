@@ -46,6 +46,6 @@ Dashboard akan berjalan di browser pada alamat `http://localhost:8501`.
 
 ## 🌍 Deploy ke Streamlit Cloud
 Dashboard ini juga tersedia secara online.  
-🔗 **[Akses Dashboard di Sini](https://gzftusnaqvy8fju37eyjmd.streamlit.app/)**  
+🔗 **[Akses Dashboard di Sini](https://vnfqtug9fubwn24r2x8fhb.streamlit.app/)**  
 
 ---
