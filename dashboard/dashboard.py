@@ -13,14 +13,19 @@ df['dteday'] = pd.to_datetime(df['dteday'])
 st.title("🚴 Bike Sharing Dashboard")
 
 # Fitur Interaktif: Filter Cuaca
-weather_options = df['weathersit'].unique()
+weather_options = ['All Weathers'] + list(df['weathersit'].unique())
 selected_weather = st.selectbox('Pilih Kondisi Cuaca:', weather_options)
-filtered_df = df[df['weathersit'] == selected_weather]
+
+if selected_weather != 'All Weathers':
+    filtered_df = df[df['weathersit'] == selected_weather]
+else:
+    filtered_df = df
+
 st.markdown("Dashboard ini menyajikan analisis peminjaman sepeda berdasarkan faktor cuaca dan lainnya.")
 
 # Menampilkan Ringkasan Data
 st.subheader("📌 Ringkasan Data")
-st.write(df.describe())
+st.write(filtered_df.describe())
 
 # Visualisasi Tren Peminjaman Sepeda Harian
 st.subheader("📅 Tren Peminjaman Sepeda Harian")
@@ -29,64 +34,32 @@ ax.plot(df['dteday'], df['cnt'], marker='o', linestyle='-', alpha=0.3, label='Ke
 ax.plot(filtered_df['dteday'], filtered_df['cnt'], marker='o', linestyle='-', color='red', label='Filtered Data')
 ax.set_xlabel("Tanggal")
 ax.set_ylabel("Jumlah Peminjaman Sepeda")
-ax.set_title("Tren Peminjaman Sepeda dari Waktu ke Waktu")
 ax.legend()
 st.pyplot(fig)
 
-# Visualisasi Jumlah Peminjaman Sepeda Berdasarkan Cuaca
-st.subheader("🌦️ Peminjaman Sepeda Berdasarkan Cuaca")
-fig, ax = plt.subplots()
-df.groupby('weathersit')['cnt'].mean().plot(kind='bar', alpha=0.3, label='Keseluruhan Data', ax=ax)
-filtered_df.groupby('weathersit')['cnt'].mean().plot(kind='bar', color='red', label='Filtered Data', ax=ax)
-ax.set_ylabel("Rata-rata Peminjaman Sepeda")
-ax.set_xlabel("Cuaca")
-ax.set_title("Rata-rata Peminjaman Sepeda Berdasarkan Cuaca")
-ax.legend()
-st.pyplot(fig)
-
-# Visualisasi Faktor yang Mempengaruhi Peminjaman Sepeda
-st.subheader("📉 Faktor yang Mempengaruhi Peminjaman Sepeda")
-correlation = df.corr()[['cnt']].sort_values(by='cnt', ascending=False)
+# Visualisasi Faktor yang Mempengaruhi Sedikitnya Peminjaman
+st.subheader("🔍 Faktor yang Mempengaruhi Peminjaman Rendah")
+low_demand = df[df['cnt'] < df['cnt'].quantile(0.25)]
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.heatmap(correlation, annot=True, cmap="coolwarm", ax=ax)
-ax.set_title("Korelasi Faktor dengan Jumlah Peminjaman Sepeda")
-st.pyplot(fig)
-
-# Visualisasi Peminjaman Berdasarkan Musim
-st.subheader("🌱 Peminjaman Sepeda Berdasarkan Musim")
-fig, ax = plt.subplots()
-df.groupby('season')['cnt'].mean().plot(kind='bar', alpha=0.3, label='Keseluruhan Data', ax=ax)
-filtered_df.groupby('season')['cnt'].mean().plot(kind='bar', color='red', label='Filtered Data', ax=ax)
+sns.boxplot(x=low_demand['season'], y=low_demand['cnt'], ax=ax)
 ax.set_xlabel("Musim")
-ax.set_ylabel("Rata-rata Peminjaman")
-ax.set_title("Rata-rata Peminjaman Sepeda per Musim")
-ax.legend()
+ax.set_ylabel("Jumlah Peminjaman Sepeda")
 st.pyplot(fig)
 
-# Visualisasi Peminjaman Berdasarkan Hari Kerja
-st.subheader("🏢 Peminjaman Sepeda Berdasarkan Hari Kerja")
-fig, ax = plt.subplots()
-df.groupby('workingday')['cnt'].mean().plot(kind='bar', alpha=0.3, label='Keseluruhan Data', ax=ax)
-filtered_df.groupby('workingday')['cnt'].mean().plot(kind='bar', color='red', label='Filtered Data', ax=ax)
-ax.set_xlabel("Hari Kerja (0 = Libur, 1 = Kerja)")
-ax.set_ylabel("Rata-rata Peminjaman")
-ax.set_title("Rata-rata Peminjaman Sepeda pada Hari Kerja vs Libur")
-ax.legend()
+# Tambahkan visualisasi tambahan untuk faktor lain
+st.subheader("📉 Pengaruh Cuaca Terhadap Peminjaman Sepeda")
+fig, ax = plt.subplots(figsize=(8, 5))
+sns.boxplot(x=df['weathersit'], y=df['cnt'], ax=ax)
+ax.set_xlabel("Kondisi Cuaca")
+ax.set_ylabel("Jumlah Peminjaman Sepeda")
 st.pyplot(fig)
 
-# Visualisasi Peminjaman Berdasarkan Bulan
-st.subheader("📆 Peminjaman Sepeda Berdasarkan Bulan")
-fig, ax = plt.subplots()
-df.groupby('mnth')['cnt'].mean().plot(kind='bar', alpha=0.3, label='Keseluruhan Data', ax=ax)
-filtered_df.groupby('mnth')['cnt'].mean().plot(kind='bar', color='red', label='Filtered Data', ax=ax)
-ax.set_xlabel("Bulan")
-ax.set_ylabel("Rata-rata Peminjaman")
-ax.set_title("Rata-rata Peminjaman Sepeda per Bulan")
-ax.legend()
-st.pyplot(fig)
+# Tambahkan opsi filter tambahan
+st.subheader("🎚️ Filter Data Berdasarkan Musim")
+season_options = ['All Seasons'] + list(df['season'].unique())
+selected_season = st.selectbox('Pilih Musim:', season_options)
 
-# Kesimpulan
-st.subheader("🔍 Kesimpulan")
-st.markdown("- **Cuaca cerah** memiliki jumlah peminjaman sepeda tertinggi.")
-st.markdown("- **Suhu memiliki dampak terbesar** terhadap peminjaman sepeda.")
-st.markdown("- **Kelembaban tinggi dan angin kencang** menurunkan jumlah peminjaman sepeda.")
+if selected_season != 'All Seasons':
+    df = df[df['season'] == selected_season]
+
+st.write("Menampilkan data untuk musim:", selected_season)
