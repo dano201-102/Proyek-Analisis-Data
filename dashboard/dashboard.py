@@ -9,6 +9,9 @@ df = pd.read_csv("data/day.csv")
 # Konversi kolom tanggal
 df['dteday'] = pd.to_datetime(df['dteday'])
 
+# Mapping label musim
+df['season_label'] = df['season'].map({1: 'Spring', 2: 'Summer', 3: 'Fall', 4: 'Winter'})
+
 # Judul Dashboard
 st.title("🚴 Bike Sharing Dashboard")
 
@@ -41,7 +44,7 @@ st.pyplot(fig)
 st.subheader("🔍 Faktor yang Mempengaruhi Peminjaman Rendah")
 low_demand = df[df['cnt'] < df['cnt'].quantile(0.25)]
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.boxplot(x=low_demand['season'], y=low_demand['cnt'], ax=ax)
+sns.boxplot(x=low_demand['season_label'], y=low_demand['cnt'], ax=ax)
 ax.set_xlabel("Musim")
 ax.set_ylabel("Jumlah Peminjaman Sepeda")
 st.pyplot(fig)
@@ -56,11 +59,11 @@ st.pyplot(fig)
 
 # Tambahkan opsi filter tambahan
 st.subheader("🎚️ Filter Data Berdasarkan Musim")
-season_options = ['All Seasons'] + list(df['season'].unique())
+season_options = ['All Seasons'] + list(df['season_label'].unique())
 selected_season = st.selectbox('Pilih Musim:', season_options)
 
 if selected_season != 'All Seasons':
-    season_df = df[df['season'] == selected_season]
+    season_df = df[df['season_label'] == selected_season]
 else:
     season_df = df
 
@@ -68,7 +71,7 @@ st.write("Menampilkan data untuk musim:", selected_season)
 
 # Visualisasi dampak musim terhadap peminjaman sepeda
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.barplot(x=season_df['season'], y=season_df['cnt'], ci=None, ax=ax)
+sns.barplot(x=season_df['season_label'], y=season_df['cnt'], ci=None, ax=ax)
 ax.set_xlabel("Musim")
 ax.set_ylabel("Rata-rata Peminjaman Sepeda")
 st.pyplot(fig)
