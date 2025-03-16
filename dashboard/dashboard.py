@@ -72,3 +72,27 @@ sns.barplot(x=season_df['season'], y=season_df['cnt'], ci=None, ax=ax)
 ax.set_xlabel("Musim")
 ax.set_ylabel("Rata-rata Peminjaman Sepeda")
 st.pyplot(fig)
+
+# 🔹 Tambahan: Korelasi Faktor dengan Peminjaman Sepeda
+st.subheader("📊 Korelasi Faktor dengan Peminjaman Sepeda")
+correlation_matrix = df[["cnt", "temp", "hum", "windspeed"]].corr()
+fig, ax = plt.subplots(figsize=(8,5))
+sns.heatmap(correlation_matrix, annot=True, cmap="coolwarm", fmt=".2f", ax=ax)
+ax.set_title("Correlation of Factors with Bike Rentals")
+st.pyplot(fig)
+
+# 🔹 Tambahan: Scatter Plot Faktor vs Peminjaman Sepeda
+st.subheader("🔍 Analisis Faktor yang Mempengaruhi Peminjaman")
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
+sns.scatterplot(x=df["temp"], y=df["cnt"], ax=axes[0])
+axes[0].set_title("Temperature vs Bike Rentals")
+
+sns.scatterplot(x=df["hum"], y=df["cnt"], ax=axes[1])
+axes[1].set_title("Humidity vs Bike Rentals")
+
+sns.scatterplot(x=df["windspeed"], y=df["cnt"], ax=axes[2])
+axes[2].set_title("Windspeed vs Bike Rentals")
+
+plt.tight_layout()
+st.pyplot(fig)
