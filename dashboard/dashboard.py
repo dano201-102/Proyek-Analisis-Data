@@ -43,18 +43,26 @@ st.pyplot(fig)
 # Visualisasi Faktor yang Mempengaruhi Sedikitnya Peminjaman
 st.subheader("🔍 Faktor yang Mempengaruhi Peminjaman Rendah")
 low_demand = df[df['cnt'] < df['cnt'].quantile(0.25)]
+season_counts = low_demand.groupby("season_label")["cnt"].mean()
+
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.boxplot(x=low_demand['season_label'], y=low_demand['cnt'], ax=ax)
+sns.barplot(x=season_counts.index, y=season_counts.values, palette="viridis", ax=ax)
 ax.set_xlabel("Musim")
-ax.set_ylabel("Jumlah Peminjaman Sepeda")
+ax.set_ylabel("Rata-rata Peminjaman Sepeda")
+ax.set_title("Rata-rata Peminjaman Sepeda per Musim (Permintaan Rendah)")
 st.pyplot(fig)
 
-# Tambahkan visualisasi tambahan untuk faktor lain
+# Visualisasi Pengaruh Cuaca
 st.subheader("📉 Pengaruh Cuaca Terhadap Peminjaman Sepeda")
+weather_counts = df.groupby("weathersit")["cnt"].mean()
+
 fig, ax = plt.subplots(figsize=(8, 5))
-sns.boxplot(x=df['weathersit'], y=df['cnt'], ax=ax)
+sns.barplot(x=weather_counts.index, y=weather_counts.values, palette="viridis", ax=ax)
 ax.set_xlabel("Kondisi Cuaca")
-ax.set_ylabel("Jumlah Peminjaman Sepeda")
+ax.set_ylabel("Rata-rata Peminjaman Sepeda")
+ax.set_title("Rata-rata Peminjaman Sepeda per Kondisi Cuaca")
+ax.set_xticks(ticks=[0, 1, 2, 3])
+ax.set_xticklabels(["Clear", "Cloudy", "Light Rain", "Heavy Rain"])
 st.pyplot(fig)
 
 # Tambahkan opsi filter tambahan
